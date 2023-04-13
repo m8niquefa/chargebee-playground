@@ -69,5 +69,5 @@ Customer count: 47
 * ```python cli.py get_customer_by_id --id SOME_VALID_STRING_ID```
 * ```python cli.py get_customer_by_email --email SOME_EMAIL@SOMEDOMAIN.COM```
 * ```python cli.py create_customer --file customer_example.json```
-* ```python cli.py create_customer --file customer_example.json```
 * ```python cli.py create_subscription --customer_id SOME_VALID_STRING_ID --file items_for_subscription_example.json```
+* ```python cli.py get_subscription_by_id --id SOME_VALID_STRING_ID```
