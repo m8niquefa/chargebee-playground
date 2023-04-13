@@ -1,0 +1,14 @@
+{
+  "first_name" : "John",
+  "last_name" : "Doe",
+  "email" : "john@test.com",
+  "billing_address" : {
+    "first_name" : "John",
+    "last_name" : "Doe",
+    "line1" : "PO Box 9999",
+    "city" : "Walnut",
+    "state" : "California",
+    "zip" : "91789",
+    "country" : "US"
+  }
+}

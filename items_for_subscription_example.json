@@ -1,0 +1,15 @@
+{
+  "subscription_items" : 
+  [
+    {
+      "amount": 30000,
+      "free_quantity": 0,
+      "item_price_id": "searcher-basic",
+      "item_type": "plan",
+      "object": "subscription_item",
+      "quantity": 1,
+      "unit_price": 30000
+    }
+  ],
+  "auto_collection": "off"
+}
