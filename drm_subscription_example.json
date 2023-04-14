@@ -2,7 +2,7 @@
   "subscription_items" : 
   [
     {
-      "item_price_id": "DRM-USD-Yearly",
+      "item_price_id": "drm",
       "item_type": "plan",
       "object": "subscription_item",
       "quantity": 1
