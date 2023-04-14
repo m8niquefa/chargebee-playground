@@ -18,16 +18,17 @@ CHARGE_BEE_URL=
 
 ### Output
 ```
+(venv) ➜  chargebee-playground git:(main) ✗ python cli.py -h
 [OK] Load environment variables
 [OK] Configured chargebee
 usage: cli.py [-h]
-              {get_customer_count,get_subscription_count,get_customer_fields,get_subscription_fields,get_customer_by_email,get_all_customers_emails,get_customer_by_id,get_subscription_by_id,get_all_subscription_ids,create_customer,create_subscription}
+              {get_customer_count,get_subscription_count,get_customer_fields,get_subscription_fields,get_customer_by_email,get_all_customers_emails,get_customer_by_id,get_subscription_by_id,get_all_subscription_ids,create_customer,create_subscription,create}
               ...
 
 MachEight Chargebee CLI playground
 
 positional arguments:
-  {get_customer_count,get_subscription_count,get_customer_fields,get_subscription_fields,get_customer_by_email,get_all_customers_emails,get_customer_by_id,get_subscription_by_id,get_all_subscription_ids,create_customer,create_subscription}
+  {get_customer_count,get_subscription_count,get_customer_fields,get_subscription_fields,get_customer_by_email,get_all_customers_emails,get_customer_by_id,get_subscription_by_id,get_all_subscription_ids,create_customer,create_subscription,create}
     get_customer_count  Get customer count
     get_subscription_count
                         Get Subscription count
@@ -47,6 +48,7 @@ positional arguments:
     create_customer     Create a customer from a file
     create_subscription
                         Create a subscription from a file with subscription items and a customer id
+    create              Create a customer and a subscription from two files
 
 options:
   -h, --help            show this help message and exit
@@ -71,3 +73,4 @@ Customer count: 47
 * ```python cli.py create_customer --file customer_example.json```
 * ```python cli.py create_subscription --customer_id SOME_VALID_STRING_ID --file items_for_subscription_example.json```
 * ```python cli.py get_subscription_by_id --id SOME_VALID_STRING_ID```
+* ```python cli.py create --customer_file min_customer_example.json --subscription_file drm_subscription_example.json```

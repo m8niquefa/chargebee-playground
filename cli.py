@@ -5,8 +5,22 @@ from pprint import pprint
 import chargebee
 from dotenv import load_dotenv
 
-from chargebee_cli_playground.customer import get_customer_count, get_customer_fields, get_customer_by_email, get_all_customers_emails, get_customer_by_id, create_customer
-from chargebee_cli_playground.subscription import get_subscription_count, get_subscription_fields, get_subscription_by_id, get_all_subscription_ids, create_subscription
+from chargebee_cli_playground.customer import (
+    get_customer_count,
+    get_customer_fields,
+    get_customer_by_email,
+    get_all_customers_emails,
+    get_customer_by_id,
+    create_customer,
+)
+from chargebee_cli_playground.subscription import (
+    get_subscription_count,
+    get_subscription_fields,
+    get_subscription_by_id,
+    get_all_subscription_ids,
+    create_subscription,
+)
+
 
 def configure():
     load_dotenv()
@@ -18,7 +32,6 @@ def configure():
         print("Environment variable CHARGE_BEE_API_KEY not found")
         exit()
 
-
     if CHARGE_BEE_URL is None:
         print("Environment variable CHARGE_BEE_URL not found")
         exit()
@@ -27,48 +40,58 @@ def configure():
     chargebee.configure(CHARGE_BEE_API_KEY, CHARGE_BEE_URL)
     print("[OK] Configured chargebee")
 
+
 def print_customer_count(args):
     count = get_customer_count()
     print(f"Customer count: {count} {'' if count <= 100 else ' or more.'}")
 
+
 def print_subscription_count(args):
     count = get_subscription_count()
     print(f"Subscription count: {count} {'' if count <= 100 else ' or more.'}")
+
 
 def print_customer_fields(args):
     fields = get_customer_fields()
     for field in fields:
         print(field)
 
+
 def print_subscription_fields(args):
     fields = get_subscription_fields()
     for field in fields:
         print(field)
 
+
 def print_customer_by_email(args):
     customer = get_customer_by_email(args.email)
     pprint(customer)
+
 
 def print_all_customers_emails(args):
     emails = get_all_customers_emails()
     for email in emails:
         print(email)
 
+
 def print_customer_by_id(args):
     customer = get_customer_by_id(args.id)
     pprint(customer)
 
+
 def print_subscription_by_id(args):
     subscription = get_subscription_by_id(args.id)
     pprint(subscription)
+
 
 def print_all_subscription_ids(args):
     subscription_ids = get_all_subscription_ids()
     for id in subscription_ids:
         print(id)
 
+
 def create_customer_from_file(args):
-    with open(args.file, 'r') as file:
+    with open(args.file, "r") as file:
         data = json.load(file)
 
     print("Data to use in ChargeBee Customer Creation:\n")
@@ -78,8 +101,9 @@ def create_customer_from_file(args):
     print("Response from ChargeBee:\n")
     pprint(response)
 
+
 def create_subscription_from_file(args):
-    with open(args.file, 'r') as file:
+    with open(args.file, "r") as file:
         data = json.load(file)
 
     print("Data to use in ChargeBee Subscription Creation:\n")
@@ -88,6 +112,34 @@ def create_subscription_from_file(args):
     response = create_subscription(data, args.customer_id)
     print("Response from ChargeBee:\n")
     pprint(response)
+
+
+def create_customer_and_subscription(args):
+    with open(args.customer_file, "r") as file:
+        customer_data = json.load(file)
+
+    print("Subscription Data to use in ChargeBee Customer creation:\n")
+    pprint(customer_data)
+
+    customer = create_customer(customer_data)
+    print("Response from ChargeBee on Customer creation:\n")
+    pprint(customer)
+
+    if customer is None:
+        print("Customer creation failed, aborting subscription creation")
+        return
+    with open(args.subscription_file, "r") as file:
+        subscription_data = json.load(file)
+
+    print("Data to use in ChargeBee Subscription Creation:\n")
+    pprint(subscription_data)
+
+    customer_id = customer["id"]
+    print(f"Customer ID to create the subscription {customer_id}:\n")
+
+    subscription = create_subscription(subscription_data, customer_id)
+    print("Response from ChargeBee on subscription creation:\n")
+    pprint(subscription)
 
 
 def main():
@@ -99,26 +151,43 @@ def main():
     subparsers.add_parser("get_customer_fields", help="Get customer fields")
     subparsers.add_parser("get_subscription_fields", help="Get Subscription fields")
 
-    get_customer_by_email_parser = subparsers.add_parser('get_customer_by_email', help='Get customer by email')
-    get_customer_by_email_parser.add_argument('--email', help='Email address of the customer to get', required=True)
+    get_customer_by_email_parser = subparsers.add_parser("get_customer_by_email", help="Get customer by email")
+    get_customer_by_email_parser.add_argument("--email", help="Email address of the customer to get", required=True)
 
     subparsers.add_parser("get_all_customers_emails", help="Get all customers emails")
 
-    get_customer_by_id_parser = subparsers.add_parser('get_customer_by_id', help='Get customer by id')
-    get_customer_by_id_parser.add_argument('--id', help='Id of the customer to get', required=True)
+    get_customer_by_id_parser = subparsers.add_parser("get_customer_by_id", help="Get customer by id")
+    get_customer_by_id_parser.add_argument("--id", help="Id of the customer to get", required=True)
 
-    get_subscription_by_id_parser = subparsers.add_parser('get_subscription_by_id', help='Get Subscription by id')
-    get_subscription_by_id_parser.add_argument('--id', help='Id of the subscription to get', required=True)
+    get_subscription_by_id_parser = subparsers.add_parser("get_subscription_by_id", help="Get Subscription by id")
+    get_subscription_by_id_parser.add_argument("--id", help="Id of the subscription to get", required=True)
 
     subparsers.add_parser("get_all_subscription_ids", help="Get all subscription ids")
 
-    create_customer_parser = subparsers.add_parser('create_customer', help='Create a customer from a file')
-    create_customer_parser.add_argument('--file', help='Path to the file to be used to create the Customer, must be a JSON file', required=True)
+    create_customer_parser = subparsers.add_parser("create_customer", help="Create a customer from a file")
+    create_customer_parser.add_argument(
+        "--file", help="Path to the file to be used to create the Customer, must be a JSON file", required=True
+    )
 
-    create_subscription_parser = subparsers.add_parser('create_subscription', help='Create a subscription from a file with subscription items and a customer id')
-    create_subscription_parser.add_argument('--file', help='Path to the file to be used to create the Subscription, must contain subscription items, must be a JSON file', required=True)
-    create_subscription_parser.add_argument('--customer_id', help='Valid Customer Id', required=True)
+    create_subscription_parser = subparsers.add_parser(
+        "create_subscription", help="Create a subscription from a file with subscription items and a customer id"
+    )
+    create_subscription_parser.add_argument(
+        "--file",
+        help="Path to the file to be used to create the Subscription, must contain subscription items, must be a JSON file",
+        required=True,
+    )
+    create_subscription_parser.add_argument("--customer_id", help="Valid Customer Id", required=True)
 
+    create_customer_and_subscription_parser = subparsers.add_parser(
+        "create", help="Create a customer and a subscription from two files"
+    )
+    create_customer_and_subscription_parser.add_argument(
+        "--customer_file", help="Path to the file to the customer payload", required=True
+    )
+    create_customer_and_subscription_parser.add_argument(
+        "--subscription_file", help="Path to the file of the subscription payload", required=True
+    )
 
     args = parser.parse_args()
 
@@ -134,13 +203,14 @@ def main():
         "get_all_subscription_ids": print_all_subscription_ids,
         "create_customer": create_customer_from_file,
         "create_subscription": create_subscription_from_file,
-
+        "create": create_customer_and_subscription,
     }
 
     if args.command in command_map:
         command_map[args.command](args)
     else:
         print(f"Invalid command: {args.command}")
+
 
 if __name__ == "__main__":
     main()
