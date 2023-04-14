@@ -2,11 +2,11 @@ import chargebee
 from chargebee.api_error import InvalidRequestError
 
 
-def create_customer(customer_as_dict: dict):
-    result = chargebee.Customer.create(customer_as_dict)
+def create_customer(data_for_customer_creation: dict):
+    result = chargebee.Customer.create(data_for_customer_creation)
     customer = result.customer
     # card = result.card # Cards are deprecated
-    return vars(customer)
+    return customer
 
 
 def get_customer_count():

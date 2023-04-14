@@ -19,6 +19,7 @@ from chargebee_cli_playground.subscription import (
     get_subscription_by_id,
     get_all_subscription_ids,
     create_subscription,
+    create_subscription_from_customer,
 )
 
 
@@ -99,7 +100,8 @@ def create_customer_from_file(args):
 
     response = create_customer(data)
     print("Response from ChargeBee:\n")
-    pprint(response)
+    print(f"response type: {type(response)}\n")
+    pprint(vars(response))
 
 
 def create_subscription_from_file(args):
@@ -111,35 +113,47 @@ def create_subscription_from_file(args):
 
     response = create_subscription(data, args.customer_id)
     print("Response from ChargeBee:\n")
-    pprint(response)
+    pprint(vars(response))
 
 
-def create_customer_and_subscription(args):
-    with open(args.customer_file, "r") as file:
-        customer_data = json.load(file)
-
+def create_chargebee_customer_with_subscription(data_for_customer_creation: dict, subscription_data: dict):
     print("Subscription Data to use in ChargeBee Customer creation:\n")
-    pprint(customer_data)
+    print(f"customer_data type: {type(data_for_customer_creation)}\n")
+    pprint(data_for_customer_creation)
 
-    customer = create_customer(customer_data)
-    print("Response from ChargeBee on Customer creation:\n")
-    pprint(customer)
-
-    if customer is None:
+    created_customer_in_chargebee = create_customer(data_for_customer_creation)
+    if created_customer_in_chargebee is None:
         print("Customer creation failed, aborting subscription creation")
         return
-    with open(args.subscription_file, "r") as file:
-        subscription_data = json.load(file)
+
+    print(f"customer type: {type(created_customer_in_chargebee)}\n")
+    customer_as_dict = vars(created_customer_in_chargebee)
+    print(f"customer_as_dict type: {type(customer_as_dict)}\n")
+    print("Response from ChargeBee on Customer creation:\n")
+    pprint(customer_as_dict)
 
     print("Data to use in ChargeBee Subscription Creation:\n")
     pprint(subscription_data)
 
-    customer_id = customer["id"]
+    customer_id = customer_as_dict["id"]
     print(f"Customer ID to create the subscription {customer_id}:\n")
 
     subscription = create_subscription(subscription_data, customer_id)
     print("Response from ChargeBee on subscription creation:\n")
-    pprint(subscription)
+    print(f"subscription type: {type(subscription)}\n")
+    subscription_as_dict = vars(subscription)
+    print(f"subscription_as_dict type: {type(subscription_as_dict)}\n")
+    pprint(subscription_as_dict)
+
+
+def create_customer_and_subscription(args):
+    with open(args.customer_file, "r") as file:
+        data_for_customer_creation = json.load(file)
+
+    with open(args.subscription_file, "r") as file:
+        subscription_data = json.load(file)
+
+    create_chargebee_customer_with_subscription(data_for_customer_creation, subscription_data)
 
 
 def main():
